@@ -38,7 +38,7 @@ export default function InputDialog(props: InputDialogProps) {
         };
 
         try {
-            if (props.detailData?.classid) {
+            if (props.detailData) {
                 await updateClasses(data, { throwError: true });
             } else {
                 await addClasses(data, { throwError: true });
@@ -46,7 +46,6 @@ export default function InputDialog(props: InputDialogProps) {
         } catch (ex) {
             return true;
         }
-
         props.onClose(true);
         message.success('保存成功');
         return true;
@@ -79,7 +78,7 @@ export default function InputDialog(props: InputDialogProps) {
                         },
                     ]}
                 />
-                
+
                 <ProFormText
                     name="classname"
                     label="班级名称"
