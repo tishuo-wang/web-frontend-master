@@ -133,6 +133,10 @@ export default function InputDialog(props: InputDialogProps) {
                             required: true,
                             message: '请输入班级人数!',
                         },
+                        {
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确的数字!',
+                          },
                     ]}
                 />
             </ProForm.Group>

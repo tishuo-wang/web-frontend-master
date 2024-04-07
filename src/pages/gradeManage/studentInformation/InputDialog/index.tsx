@@ -86,6 +86,7 @@ export default function InputDialog(props: InputDialogProps) {
           label="性别"
           width="xs"
           options={options}
+          required={true}
         />
       </ProForm.Group>
 
@@ -124,22 +125,12 @@ export default function InputDialog(props: InputDialogProps) {
         <ProFormText
           name="parentname"
           label="家长姓名"
-          rules={[
-            {
-              required: true,
-              message: '请输入家长姓名!',
-            },
-          ]}
+          placeholder={'请输入家长姓名(选填)'}
         />
         <ProFormText
           name="phone"
           label="家长电话"
-          rules={[
-            {
-              required: true,
-              message: '请输入家长电话!',
-            },
-          ]}
+          placeholder={'请输入家长电话(选填)'}
         />
       </ProForm.Group>
     </ModalForm>

@@ -107,6 +107,10 @@ export default function InputDialog(props: InputDialogProps) {
                         required: true,
                         message: '请输入学号!',
                     },
+                    {
+                        pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                        message: '请输入正确的学号!',
+                    },
                 ]}
             />
             <ProForm.Group>
@@ -178,6 +182,10 @@ export default function InputDialog(props: InputDialogProps) {
                         {
                             required: true,
                             message: '请输入学年!',
+                        },
+                        {
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确的学年!',
                         },
                     ]}
                 />
