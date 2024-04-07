@@ -42,7 +42,7 @@ export default function InputDialog(props: InputDialogProps) {
         };
 
         try {
-            if (props.detailData?.chineseGrade) {
+            if (props.detailData?.englishGrade) {
                 await updateGrade(data, { throwError: true });
             } else {
                 await addGrade(data, { throwError: true });
