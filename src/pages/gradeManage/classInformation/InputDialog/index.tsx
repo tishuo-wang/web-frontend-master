@@ -38,7 +38,7 @@ export default function InputDialog(props: InputDialogProps) {
         };
 
         try {
-            if (props.detailData) {
+            if (props.detailData?.classid) {
                 await updateClasses(data, { throwError: true });
             } else {
                 await addClasses(data, { throwError: true });
