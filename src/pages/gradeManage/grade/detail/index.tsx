@@ -64,6 +64,10 @@ export default () => {
                                 required: true,
                                 message: '请输入班级号!',
                             },
+                            {
+                                pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                                message: '请输入正确的班级号!',
+                            },
                         ]}
                     />
                 </ProForm.Group>
@@ -86,6 +90,10 @@ export default () => {
                                 required: true,
                                 message: '请输入语文成绩!',
                             },
+                            {
+                                pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                                message: '请输入正确的数字!',
+                            },
                         ]}
                     />
                     <ProFormText
@@ -96,6 +104,10 @@ export default () => {
                                 required: true,
                                 message: '请输入数学成绩!',
                             },
+                            {
+                                pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                                message: '请输入正确的数字!',
+                            },
                         ]}
                     />
                     <ProFormText
@@ -105,6 +117,10 @@ export default () => {
                             {
                                 required: true,
                                 message: '请输入英语成绩!',
+                            },
+                            {
+                                pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                                message: '请输入正确的数字!',
                             },
                         ]}
                     />

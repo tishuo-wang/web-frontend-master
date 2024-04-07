@@ -12,7 +12,11 @@ export default () => {
     const form = useRef<ProFormInstance>(null);
     const id: any = searchParams.get('id') || '';
     const [student, setStudent] = useState<API.StudentDTO>();
-
+    interface option {
+        value: number,
+        label: string,
+    }
+    const options: option[] = [{ value: 1, label: '男' }, { value: 2, label: '女' }];
     useEffect(() => {
         getStudent({ id }).then((result: any) => {
             setStudent(result || {});
@@ -58,10 +62,7 @@ export default () => {
                         name="sex"
                         label="性别(男1女2)"
                         width="xs"
-                        valueEnum={{
-                            1: '男',
-                            2: '女',
-                        }}
+                        options={options}
                     />
                 </ProForm.Group>
 
@@ -74,6 +75,10 @@ export default () => {
                                 required: true,
                                 message: '请输入学号!',
                             },
+                            {
+                                pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                                message: '请输入正确的学号!',
+                            },
                         ]}
                     />
                     <ProFormText
@@ -83,6 +88,10 @@ export default () => {
                             {
                                 required: true,
                                 message: '请输入班级号!',
+                            },
+                            {
+                                pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                                message: '请输入正确的班级号!',
                             },
                         ]}
                     />

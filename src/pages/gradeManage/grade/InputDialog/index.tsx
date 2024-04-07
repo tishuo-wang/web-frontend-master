@@ -91,6 +91,10 @@ export default function InputDialog(props: InputDialogProps) {
                             required: true,
                             message: '请输入班级号!',
                         },
+                        {
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确的班级号!',
+                        },
                     ]}
                 />
             </ProForm.Group>
@@ -114,6 +118,11 @@ export default function InputDialog(props: InputDialogProps) {
                             required: true,
                             message: '请输入语文成绩!',
                         },
+                        {
+                            // 使用正则表达式验证是否为数字
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确的数字!',
+                        },
                     ]}
                 />
                 <ProFormText
@@ -123,6 +132,10 @@ export default function InputDialog(props: InputDialogProps) {
                         {
                             required: true,
                             message: '请输入数学成绩!',
+                        },
+                        {
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确的数字!',
                         },
                     ]}
                 />
@@ -136,6 +149,10 @@ export default function InputDialog(props: InputDialogProps) {
                         {
                             required: true,
                             message: '请输入英语成绩!',
+                        },
+                        {
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确的数字!',
                         },
                     ]}
                 />
