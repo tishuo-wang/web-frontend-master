@@ -110,6 +110,10 @@ export default function InputDialog(props: InputDialogProps) {
                             required: true,
                             message: '请输入班主任电话!',
                         },
+                        {
+                            pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+                            message: '请输入正确形式的电话号码!',
+                        },
                     ]}
                 />
             </ProForm.Group>
@@ -136,7 +140,7 @@ export default function InputDialog(props: InputDialogProps) {
                         {
                             pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
                             message: '请输入正确的数字!',
-                          },
+                        },
                     ]}
                 />
             </ProForm.Group>

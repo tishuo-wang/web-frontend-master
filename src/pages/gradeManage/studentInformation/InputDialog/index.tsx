@@ -94,10 +94,13 @@ export default function InputDialog(props: InputDialogProps) {
         <ProFormText
           name="userCode"
           label="学号"
+          tooltip="学号为9位"
           rules={[
             {
               required: true,
-              message: '请输入学号!',
+              message: '请输入9位学号!',
+              max: 9,
+              min: 9,
             },
             {
               pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
@@ -131,6 +134,13 @@ export default function InputDialog(props: InputDialogProps) {
           name="phone"
           label="家长电话"
           placeholder={'请输入家长电话(选填)'}
+          rules={[
+            {
+              pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
+              message: '请输入正确形式的电话号码!',
+            },
+          ]}
+
         />
       </ProForm.Group>
     </ModalForm>

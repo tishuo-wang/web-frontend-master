@@ -1,5 +1,5 @@
 import { convertPageData, orderBy } from '@/utils/request';
-import { ActionType, ModalForm,  ProColumns, ProFormInstance, ProTable } from '@ant-design/pro-components';
+import { ActionType, ModalForm, ProColumns, ProFormInstance, ProTable } from '@ant-design/pro-components';
 import { Button, Input, Select } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import React from 'react';
@@ -13,10 +13,9 @@ interface AverageGradeProps {
 
 export default function AverageGrade(props: AverageGradeProps) {
     const form = useRef<ProFormInstance>(null);
-
     const refAction = useRef<ActionType>(null);
     const [term, setTerm] = useState<string>();
-
+    const [tempTerm, setTempTerm] = useState<string>("");
     const [academicyear, setacademicyear] = useState<string>();
 
 
@@ -24,7 +23,12 @@ export default function AverageGrade(props: AverageGradeProps) {
         value: string;
         label: string;
     };
-    const termList: option[] = Array();
+
+    const termList: option[] = [
+        { value: '春季', label: '春季' },
+        { value: '秋季', label: '秋季' }
+    ];
+
     const changeAcademicyear = (event: React.KeyboardEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         setacademicyear(newValue);
@@ -34,10 +38,6 @@ export default function AverageGrade(props: AverageGradeProps) {
         setTerm(value);
         refAction.current?.reload();
     };
-    const termSP: option = { value: '春季', label: '春季' };
-    const termAU: option = { value: '秋季', label: '秋季' };
-    termList.push(termSP);
-    termList.push(termAU);
 
     const columns: ProColumns<API.GradeAverVO>[] = [
         {
@@ -101,6 +101,8 @@ export default function AverageGrade(props: AverageGradeProps) {
     // }, [academicyear, term]);
 
     const onFinish = async (values: any) => {
+        setacademicyear("");
+        changeTerm("");
         props.onClose(true);
         return true;
     };
@@ -112,7 +114,11 @@ export default function AverageGrade(props: AverageGradeProps) {
             formRef={form}
             modalProps={{
                 destroyOnClose: true,
-                onCancel: () => props.onClose(false),
+                onCancel: () => {
+                    setacademicyear("");
+                    changeTerm("");
+                    props.onClose(false)
+                },
             }}
             title="查询平均成绩"
             open={props.visible}
@@ -121,6 +127,7 @@ export default function AverageGrade(props: AverageGradeProps) {
                 search={false}
                 actionRef={refAction}
                 rowKey="classid"
+
                 request={async (params = {}, sort) => {
                     const props = {
                         ...params,
@@ -144,10 +151,19 @@ export default function AverageGrade(props: AverageGradeProps) {
                     <Select
                         style={{ width: 200 }}
                         value={term ? term : undefined}
-                        onChange={changeTerm}
+                        onChange={setTempTerm}
                         options={termList}
                         placeholder='筛选学期'
                     />,
+                    <Button
+                        type="primary"
+                        key="primary"
+                        onClick={() => {
+                            changeTerm(tempTerm);
+                            refAction.current?.reload;
+                        }}>
+                        搜索
+                    </Button>,
                     <Button type="primary" ghost onClick={() => { setacademicyear(""); changeTerm(""); refAction.current?.reload(); }}>
                         重置
                     </Button>,

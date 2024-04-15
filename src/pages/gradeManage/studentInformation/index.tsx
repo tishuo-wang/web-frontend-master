@@ -1,9 +1,9 @@
 import { convertPageData, orderBy, waitTime } from '@/utils/request';
 import { openConfirm } from '@/utils/ui';
-import { PlusOutlined, DeleteOutlined, ExportOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ExportOutlined, DownloadOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InputDialog from './InputDialog';
 import { downloadFile } from '@/utils/download-utils';
 import { Link } from '@umijs/max';
@@ -14,8 +14,7 @@ import { Select } from 'antd';
 import GradeDialog from './GradeDialog';
 
 
-
-export const ids = await listClassid();
+let change_classidList: boolean = true;
 
 export default () => {
     const refAction = useRef<ActionType>(null);
@@ -25,12 +24,15 @@ export default () => {
     var [queryDTO] = useState<API.GradeDTO>();
     const [gradeVisible, setGradeVisible] = useState(false);
     const [searchProps, setSearchProps] = useState<API.StudentQueryDTO>({});
+    const [searchPropsExample, setSearchPropsExample] = useState<API.StudentQueryDTO>({});
     const [visible, setVisible] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [classId, setClassId] = useState<number>();
     const [name, setName] = useState<string>("");
     const [classid, setClassid] = useState<string>("");
     const [userCode, setUserCode] = useState<string>("");
+    const [ids, setIds] = useState<number[] | undefined>([]);
+
 
 
     interface option {
@@ -46,6 +48,13 @@ export default () => {
         const classId: option = { value: id, label: id }
         classIdList.push(classId)
     });
+
+
+    useEffect(() => {
+        waitTime().then(async () => {
+            setIds(await listClassid());
+        });
+    }, [change_classidList]);
 
     const columns: ProColumns<API.StudentVO>[] = [
         {
@@ -76,9 +85,17 @@ export default () => {
             dataIndex: 'sex',
             width: 70,
             search: false,
-            render: (_: any, record) => {
-                return record?.sex == 1 ? '男' : '女';
-              },
+            filters: true,
+            onFilter: true,
+            valueType: 'select',
+            valueEnum: {
+                1: {
+                    text: '男'
+                },
+                2: {
+                    text: '女'
+                }
+            }
         },
         {
             title: '学号',
@@ -158,6 +175,15 @@ export default () => {
         });
     };
 
+    const importExample = () => {
+        setDownloading(true);
+        downloadFile(`/api/student/exportStudent`, searchPropsExample, '导入模板.xls').then(() => {
+            waitTime(1000).then(() => setDownloading(false));
+        });
+    };
+
+
+
     return (
         <PageContainer>
             <ProTable<API.StudentVO>
@@ -170,6 +196,14 @@ export default () => {
                         orderBy: orderBy(sort),
                     };
                     setSearchProps(props);
+
+                    const propsExample = {
+                        ...params,
+                        classid: -1,
+                        orderBy: orderBy(sort),
+                    };
+                    setSearchPropsExample(propsExample);
+
                     return convertPageData(await listStudent(props));
                 }}
                 toolBarRender={() => [
@@ -199,7 +233,11 @@ export default () => {
                         type="primary"
                         key="primary"
                         danger
-                        onClick={handleDelete}
+                        onClick={() => {
+                            handleDelete();
+                            change_classidList = !change_classidList;
+                        }
+                        }
                         disabled={!selectedRowKeys?.length}
                     >
                         <DeleteOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 删除
@@ -217,6 +255,9 @@ export default () => {
                     <Button type="default" onClick={handleExport} loading={downloading}>
                         <ExportOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 导出
                     </Button>,
+                    <Button type="default" onClick={importExample} loading={downloading}>
+                        <DownloadOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 下载导入模板
+                    </Button>,
                 ]}
                 columns={columns}
                 rowSelection={{
@@ -231,6 +272,7 @@ export default () => {
                 onClose={(result) => {
                     setVisible(false);
                     result && refAction.current?.reload();
+                    change_classidList = !change_classidList;
                 }}
                 visible={visible}
             />

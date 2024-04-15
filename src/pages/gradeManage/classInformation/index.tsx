@@ -1,6 +1,6 @@
 import { convertPageData, orderBy, waitTime } from '@/utils/request';
 import { openConfirm } from '@/utils/ui';
-import { PlusOutlined, DeleteOutlined, ExportOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ExportOutlined, DownloadOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
@@ -19,10 +19,13 @@ export default () => {
     const [importVisible, setImportVisible] = useState(false);
     const [classes, setClasses] = useState<API.ClassesVO>();
     const [searchProps, setSearchProps] = useState<API.ClassesQueryDTO>({});
+    const [searchPropsExample, setSearchPropsExample] = useState<API.GradeQueryDTO>({});
     const [visible, setVisible] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [studentVisible, setStudentVisible] = useState(false);
     const [classid, setClassid] = useState<number>();
+    const [classNum, setClassNum] = useState<number>();
+    const [classLoudNum, setClassLoudNum] = useState<number>();
     var [queryDTO] = useState<API.StudentDTO>();
 
     const columns: ProColumns<API.ClassesVO>[] = [
@@ -57,7 +60,7 @@ export default () => {
         {
             title: '班级名称',
             dataIndex: 'classname',
-            search: false,
+            // search: false,
         },
         {
             title: '班主任姓名',
@@ -84,13 +87,13 @@ export default () => {
             search: false,
         },
         {
-            title: '已录入人数',
+            title: '录入人数',
             dataIndex: 'studentNumber',
             width: 100,
             search: false,
         },
         {
-            title: '查询已录入学生',
+            title: '查询录入情况',
             width: 150,
             dataIndex: 'option',
             valueType: 'option',
@@ -100,9 +103,11 @@ export default () => {
                     shape='round'
                     onClick={() => {
                         setClassid(Number(record.classid));
+                        setClassNum(Number(record.number));
+                        setClassLoudNum(Number(record.studentNumber))
                         setStudentVisible(true);
                     }}>
-                    查询已录入学生
+                    查询录入情况
                 </Button>
             ],
         },
@@ -143,6 +148,13 @@ export default () => {
         });
     };
 
+    const importExample = () => {
+        setDownloading(true);
+        downloadFile(`/api/classes/exportClasses`, searchPropsExample, '班级导入模板.xls').then(() => {
+            waitTime(1000).then(() => setDownloading(false));
+        });
+    };
+
     return (
         <PageContainer>
             <ProTable<API.ClassesVO>
@@ -155,7 +167,18 @@ export default () => {
                         orderBy: orderBy(sort),
                     };
                     setSearchProps(props);
+
+                    const propsExample = {
+                        ...params,
+                        classid: '-1',
+                        orderBy: orderBy(sort),
+                    };
+                    setSearchPropsExample(propsExample);
+
                     return convertPageData(await listClasses(props));
+                }}
+                search={{
+                    span:6.5,
                 }}
                 toolBarRender={() => [
                     <Button
@@ -190,6 +213,9 @@ export default () => {
                     <Button type="default" onClick={handleExport} loading={downloading}>
                         <ExportOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 导出
                     </Button>,
+                    <Button type="default" onClick={importExample} loading={downloading}>
+                        <DownloadOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 下载导入模板
+                    </Button>,
                 ]}
                 columns={columns}
                 rowSelection={{
@@ -218,6 +244,8 @@ export default () => {
             <StudentDialog
                 detailData={queryDTO}
                 classid={classid!}
+                classNum={classNum!}
+                classLoudNum={classLoudNum!}
                 onClose={(result) => {
                     setStudentVisible(false);
                     result && refAction.current?.reload();

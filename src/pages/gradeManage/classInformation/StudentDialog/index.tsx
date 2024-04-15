@@ -2,7 +2,7 @@ import { convertPageData, orderBy, waitTime } from '@/utils/request';
 import { openConfirm } from '@/utils/ui';
 import { PlusOutlined, DeleteOutlined, ExportOutlined } from '@ant-design/icons';
 import { ActionType, ModalForm, ProColumns, ProFormInstance, ProTable } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, Progress } from 'antd';
 import { useRef, useState, useEffect } from 'react';
 import InputDialog from '../../studentInformation/InputDialog';
 import { deleteStudent, listStudent } from '@/services/api/student';
@@ -14,6 +14,8 @@ interface StudentDialogProps {
     detailData?: API.StudentDTO;
     classid: number;
     visible: boolean;
+    classNum: number;
+    classLoudNum: number;
     onClose: (result: boolean) => void;
 }
 
@@ -128,6 +130,7 @@ export default function StudentDialog(props: StudentDialogProps) {
             title="查询已录入学生"
             open={props.visible}
         >
+            <Progress percent={Number((props.classLoudNum/props.classNum*100).toFixed(1))} />
             <ProTable<API.StudentVO>
                 actionRef={refAction}
                 search={false}

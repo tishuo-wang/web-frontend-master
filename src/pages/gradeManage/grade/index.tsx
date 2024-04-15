@@ -1,6 +1,6 @@
 import { convertPageData, orderBy, waitTime } from '@/utils/request';
 import { openConfirm } from '@/utils/ui';
-import { PlusOutlined, DeleteOutlined, ExportOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ExportOutlined, DownloadOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import { downloadFile } from '@/utils/download-utils';
 import { Link } from '@umijs/max';
 import ImportDialog from './ImportDialog';
 import React from 'react';
-import { deleteGrade, listAverageGrade, listGrade } from '@/services/api/grade';
+import { deleteGrade, listGrade } from '@/services/api/grade';
 
 import AverageGrade from './averageGrade';
 
@@ -23,6 +23,7 @@ export default () => {
     const [averageVisible, setAverageVisible] = useState(false);
     const [grade, setGrade] = useState<API.GradeVO>();
     const [searchProps, setSearchProps] = useState<API.GradeQueryDTO>({});
+    const [searchPropsExample, setSearchPropsExample] = useState<API.GradeQueryDTO>({});
     const [visible, setVisible] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const columns: ProColumns<API.GradeVO>[] = [
@@ -112,7 +113,11 @@ export default () => {
             fixed: 'right',
             dataIndex: 'option',
             valueType: 'option',
-            render: (_, record) => [<Link to={`detail?id=${record.id}`}>修改</Link>],
+            render: (_, record) => [
+                <Link to={`detail?id=${record.id}`}>
+                    修改
+                </Link>
+            ],
         },
     ];
 
@@ -131,6 +136,13 @@ export default () => {
         });
     };
 
+    const importExample = () => {
+        setDownloading(true);
+        downloadFile(`/api/grade/exportGrade`, searchPropsExample, '成绩导入模板.xls').then(() => {
+            waitTime(1000).then(() => setDownloading(false));
+        });
+    };
+
 
     return (
         <PageContainer>
@@ -142,9 +154,21 @@ export default () => {
                         ...params,
                         orderBy: orderBy(sort),
                     };
+
+                    const propsExample = {
+                        ...params,
+                        classid: '-1',
+                        orderBy: orderBy(sort),
+                    };
+                    setSearchPropsExample(propsExample);
+
                     setSearchProps(props);
                     return convertPageData(await listGrade(props));
                 }}
+                search={{
+                    span:6,
+                }}
+
                 toolBarRender={() => [
                     <Button
                         type="primary"
@@ -185,6 +209,9 @@ export default () => {
                     </Button>,
                     <Button type="default" onClick={handleExport} loading={downloading}>
                         <ExportOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 导出
+                    </Button>,
+                    <Button type="default" onClick={importExample} loading={downloading}>
+                        <DownloadOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> 下载导入模板
                     </Button>,
                 ]}
                 columns={columns}

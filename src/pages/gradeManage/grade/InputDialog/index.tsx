@@ -102,10 +102,13 @@ export default function InputDialog(props: InputDialogProps) {
                 name="userCode"
                 label="学号"
                 disabled={props.disable}
+                tooltip="学号为9位"
                 rules={[
                     {
                         required: true,
-                        message: '请输入学号!',
+                        message: '请输入9位学号!',
+                        max: 9,
+                        min: 9,
                     },
                     {
                         pattern: /^(?:[1-9]\d*|0)?(?:\.\d+)?$/,
@@ -169,6 +172,10 @@ export default function InputDialog(props: InputDialogProps) {
                         {
                             required: true,
                             message: '请输入录入时间(如2024/3/19)!',
+                        },
+                        {
+                            pattern: /^\d{4}\/\d{1,2}\/\d{1,2}$/,
+                            message: '请输入正确的日期格式(YYYY/M/D)'
                         },
                     ]}
                 />
