@@ -1,6 +1,6 @@
 import { convertPageData, orderBy, waitTime } from '@/utils/request';
 import { openConfirm } from '@/utils/ui';
-import { PlusOutlined, DeleteOutlined, ExportOutlined, DownloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ExportOutlined, DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
@@ -55,22 +55,14 @@ export default () => {
             dataIndex: 'userCode',
             width: 150,
             search: false,
-            sorter: (a, b) => {
-                const aUserCode = a.userCode ? parseInt(a.userCode, 10) : 0;
-                const bUserCode = b.userCode ? parseInt(b.userCode, 10) : 0;
-                return aUserCode - bUserCode;
-            },
+            sorter: true,
         },
         {
             title: '班级号',
             dataIndex: 'classid',
             width: 100,
             // search: false,
-            sorter: (a, b) => {
-                const aClassid = a.classid ? parseInt(a.classid, 10) : 0;
-                const bClassid = b.classid ? parseInt(b.classid, 10) : 0;
-                return aClassid - bClassid;
-            },
+            sorter: true,
         },
         {
             title: '语文',
@@ -163,10 +155,10 @@ export default () => {
                     setSearchPropsExample(propsExample);
 
                     setSearchProps(props);
-                    return convertPageData(await listGrade(props));
+                    return convertPageData(await listGrade({ ...params, orderBy: orderBy(sort) }));
                 }}
                 search={{
-                    span:6,
+                    span: 6,
                 }}
 
                 toolBarRender={() => [
@@ -174,8 +166,12 @@ export default () => {
                         type="primary"
                         key="primary"
                         onClick={() => { setAverageVisible(true); }}
+                        style={{
+                            background: 'linear-gradient(to right, #6fa8dc, #42b983)',
+                            borderColor: 'transparent',
+                          }}
                     >
-                        查询班级平均分
+                        <SearchOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />查询班级平均分
                     </Button>,
 
                     <Button

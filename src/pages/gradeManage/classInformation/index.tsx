@@ -5,6 +5,7 @@ import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro
 import { Button } from 'antd';
 import { useRef, useState } from 'react';
 import InputDialog from './InputDialog';
+import DrawerInput from './DrawerInput';
 import { downloadFile } from '@/utils/download-utils';
 import ImportDialog from './ImportDialog';
 import { deleteClasses, listClasses } from '@/services/api/classes';
@@ -21,6 +22,7 @@ export default () => {
     const [searchProps, setSearchProps] = useState<API.ClassesQueryDTO>({});
     const [searchPropsExample, setSearchPropsExample] = useState<API.GradeQueryDTO>({});
     const [visible, setVisible] = useState(false);
+    const [drawerVisible, setDrawerVisible] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [studentVisible, setStudentVisible] = useState(false);
     const [classid, setClassid] = useState<number>();
@@ -122,7 +124,7 @@ export default () => {
                     <a
                         onClick={() => {
                             setClasses(record);
-                            setVisible(true);
+                            setDrawerVisible(true);
                         }}
                     >
                         修改
@@ -178,7 +180,7 @@ export default () => {
                     return convertPageData(await listClasses(props));
                 }}
                 search={{
-                    span:6.5,
+                    span: 6.5,
                 }}
                 toolBarRender={() => [
                     <Button
@@ -231,6 +233,14 @@ export default () => {
                     result && refAction.current?.reload();
                 }}
                 visible={visible}
+            />
+            <DrawerInput
+                detailData={classes}
+                onClose={(result) => {
+                    setDrawerVisible(false);
+                    result && refAction.current?.reload();
+                }}
+                visible={drawerVisible}
             />
             <ImportDialog
                 visible={importVisible}

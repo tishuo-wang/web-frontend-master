@@ -102,22 +102,14 @@ export default () => {
             dataIndex: 'userCode',
             width: 150,
             // search: false,
-            sorter: (a, b) => {
-                const aUserCode = a.userCode ? parseInt(a.userCode, 10) : 0;
-                const bUserCode = b.userCode ? parseInt(b.userCode, 10) : 0;
-                return aUserCode - bUserCode;
-            },
+            sorter: true,
         },
         {
             title: '班级号',
             dataIndex: 'classid',
             width: 100,
             search: false,
-            sorter: (a, b) => {
-                const aclassid = a.classid ?? 0;
-                const bclassid = b.classid ?? 0;
-                return aclassid - bclassid;
-            },
+            sorter: true,
         },
         {
             title: '家长姓名',
@@ -204,7 +196,7 @@ export default () => {
                     };
                     setSearchPropsExample(propsExample);
 
-                    return convertPageData(await listStudent(props));
+                    return convertPageData(await listStudent({ ...params, orderBy: orderBy(sort) }));
                 }}
                 toolBarRender={() => [
                     <Button type="primary" ghost onClick={() => { changeClassId(0); refAction.current?.reload(); }}>

@@ -31,7 +31,7 @@ export default (props: InputDialogProps) => {
             return true;
         }
 
-        message.error(`${json?.errorMessage}导入失败`);
+        message.error(`${json?.errorMessage}导入失败，请检查班级号是否重复`);
         return false;
     };
     return (
